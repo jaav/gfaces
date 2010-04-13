@@ -36,7 +36,7 @@ import models.Contact;
 public class Application extends Controller {
 
     private static final String START = "start";
-    //git test2
+    //git test3
     private static GoogleService googleService = null;
     private static final String ROOT_URL = "http://www.google.com/m8/feeds/";
     private static final String DEFAULT_FEED = ROOT_URL+"contacts/default/full";
