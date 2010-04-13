@@ -1,0 +1,25 @@
+.imageEditingLink, .imageReplacerLink{
+    font-size:0.8em;
+    color:darkcyan;
+    cursor:pointer;
+}
+.imageReplacerLink{
+    margin:0 0 0 10px;
+}
+.resultBlock{
+    width:110px;
+    height:160px;
+    float:left;
+    display:block;
+}
+#imageEditorContainer{
+    display: none;
+    position:absolute;
+    background-color:darkGray;
+}
+.resultImage{
+    width:100px;
+}
+.resultStock{
+    display:none;
+}

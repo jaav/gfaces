@@ -1,0 +1,21 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       Application.index
+GET     /show                                   Application.show
+*       /pay                                    Application.pay
+*       /start                                  Application.start
+*       /authenticate                           Application.authenticate
+GET     /backFromGoogle                         Application.backFromGoogle
+GET     /getContacts                            Application.getContacts
+GET     /imageMatrix                            Application.imageMatrix
+GET     /updateImageJs                          Application.updateImageJs
+GET     /getProfilePic                          Application.getProfilePic
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+
+# Catch all
+*       /{controller}/{action}                  {controller}.{action}
