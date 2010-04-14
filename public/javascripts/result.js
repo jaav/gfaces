@@ -57,12 +57,14 @@ contacts.imageCounter = 0;
 
 contacts.initSearch = function(){
     contacts.searcher = new google.search.ImageSearch();
-    contacts.searcher.setRestriction(google.search.Search.RESTRICT_SAFESEARCH,
-            google.search.Search.SAFESEARCH_STRICT);
-    contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,
-            google.search.ImageSearch.IMAGESIZE_MEDIUM);
-    /*contacts.setRestriction(google.search.ImageSearch.RESTRICT_IMAGETYPE,
-                            google.search.ImageSearch.IMAGETYPE_FACES);*/
+    /*contacts.searcher.setRestriction(google.search.Search.RESTRICT_SAFESEARCH,
+            google.search.Search.SAFESEARCH_STRICT);*/
+    /*contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,
+            google.search.ImageSearch.IMAGESIZE_SMALL);*/
+    /*contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,
+            google.search.ImageSearch.IMAGESIZE_MEDIUM);*/
+    contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGETYPE,
+                            google.search.ImageSearch.IMAGETYPE_FACES);
 }
 
 contacts.doSearch = function(){
@@ -71,8 +73,8 @@ contacts.doSearch = function(){
     var tteesstt = $($('.resultImageContainer')[contacts.imageCounter]);
     var test2 = $($('.resultImageContainer')[contacts.imageCounter]).children('.resultText'); 
     var phrase = $($('.resultImageContainer')[contacts.imageCounter]).children('.resultText').text();
-    phrase += " ";
-    phrase += $($('.resultImageContainer')[contacts.imageCounter]).children('.resultMail').text();
+    //phrase += " ";
+    //phrase += $($('.resultImageContainer')[contacts.imageCounter]).children('.resultMail').text();
     contacts.searcher.execute(phrase);
 }
 

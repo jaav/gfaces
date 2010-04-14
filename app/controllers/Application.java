@@ -40,6 +40,9 @@ public class Application extends Controller {
     private static GoogleService googleService = null;
     private static final String ROOT_URL = "http://www.google.com/m8/feeds/";
     private static final String DEFAULT_FEED = ROOT_URL+"contacts/default/full";
+    private static boolean filterPersons = true;
+    private static boolean filterNames = true;
+    private static int filterQuantity = 32;
 
     public static void index() {
         render();
@@ -83,9 +86,9 @@ public class Application extends Controller {
         String authSubLogin = AuthSubUtil.getRequestUrl(next, scope, secure, session);
         String aToken = AuthSubUtil.getTokenFromReply(authSubLogin);*/
         try {
-            String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+                String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
             session.put("token", sessionToken);
-            getContacts();
+            getContacts(1, 100);
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (GeneralSecurityException e) {
@@ -96,11 +99,13 @@ public class Application extends Controller {
 
     }
 
-    public static void getContacts() {
+    public static void getContacts(int from, int quantity) {
         initService();
+        if(from == 0) from = 1; 
+        if(quantity == 0) quantity = 100;
         googleService.setAuthSubToken(session.get("token"), null);
         try {
-            renderArgs.put("entries", queryEntries());
+            renderArgs.put("entries", queryEntries(from, quantity));
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ServiceException e) {
@@ -129,12 +134,13 @@ public class Application extends Controller {
 
     }
 
-    private static List<Contact> queryEntries()
+    private static List<Contact> queryEntries(int from, int quantity)
             throws IOException, ServiceException {
         Query myQuery = new Query(new URL(DEFAULT_FEED));
-        myQuery.setMaxResults(32);
-        myQuery.setStringCustomParameter("sortorder", "ascending");
-        myQuery.setStringCustomParameter("orderby", "lastmodified");
+        myQuery.setMaxResults(quantity);
+        myQuery.setStartIndex(from);
+        //myQuery.setStringCustomParameter("sortorder", "ascending");
+        //myQuery.setStringCustomParameter("orderby", "lastmodified");
         List<Contact> contacts = new ArrayList<Contact>();
 
         try {
@@ -149,7 +155,7 @@ public class Application extends Controller {
                         c.image = entry.getContactPhotoLink().getHref().substring(ROOT_URL.length());
                 }
                 c.email = getPrimaryEmail(entry.getXmlBlob());
-                contacts.add(c);
+                if(filterNames && StringUtils.isNotBlank(c.name)) contacts.add(c);
 
             }
             return contacts;

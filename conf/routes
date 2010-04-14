@@ -14,6 +14,9 @@ GET     /imageMatrix                            Application.imageMatrix
 GET     /updateImageJs                          Application.updateImageJs
 GET     /getProfilePic                          Application.getProfilePic
 
+*       /bespin                                 module:bespin
+
+
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                                staticDir:public
 
