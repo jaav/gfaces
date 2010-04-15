@@ -45,9 +45,9 @@ contacts.pasteProfilePic = function(){
     if(contacts.searcher.results.length >0){
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').attr('src', contacts.getImageUrl(contacts.searcher.results[0].url));
         for(var i = 0; i<contacts.searcher.results.length; i++){
-            $($('.resultStock')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[i].url)+"'/>")
-                    .append("<img src='/public/images/contact.gif'/>");
+            $($('.resultStock')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[i].url)+"'/>");
         }
+        $($('.resultStock')[contacts.imageCounter]).append("<img src='/public/images/contact.gif'/>");
         $($('.resultActions')[contacts.imageCounter]).append("<a class='imageEditingLink'>Edit</a><a class='imageReplacerLink'>Replace</a>");
         $($('.resultActions')[contacts.imageCounter]).children('.imageEditingLink').click(function(){
             var message = $(this).parent().prev().text();

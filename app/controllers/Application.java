@@ -85,10 +85,18 @@ public class Application extends Controller {
         boolean session = true;
         String authSubLogin = AuthSubUtil.getRequestUrl(next, scope, secure, session);
         String aToken = AuthSubUtil.getTokenFromReply(authSubLogin);*/
-            //String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
-        session.clear();
-        session.put("token", token);
-        getContacts(1, 100);
+        try {
+            String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
+            session.clear();
+            session.put("token", sessionToken);
+            getContacts(1, 100);
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (AuthenticationException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
 
     }
 
