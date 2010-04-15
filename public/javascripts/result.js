@@ -45,8 +45,6 @@ contacts.pasteProfilePic = function(){
     if(contacts.searcher.results.length >0){
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').attr('src', contacts.getImageUrl(contacts.searcher.results[0].url));
         for(var i = 0; i<contacts.searcher.results.length; i++){
-            var tesd = contacts.searcher.results[i].url; 
-            var test = contacts.getImageUrl(contacts.searcher.results[i].url);
             $($('.resultStock')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[i].url)+"'/>")
                     .append("<img src='/public/images/contact.gif'/>");
         }
@@ -56,7 +54,7 @@ contacts.pasteProfilePic = function(){
             alert(message);
         });
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').click(function(){ 
-            var stock = $(this).next().children('img');
+            var stock = $(this).parent().next().children('img');
             for(var i = 0; i<stock.length; i++){
                 if($(this).attr('src') === $(stock[i]).attr('src')){
                     if(stock[i+1]) $(this).attr('src', $(stock[i+1]).attr('src'))

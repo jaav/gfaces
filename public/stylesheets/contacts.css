@@ -38,6 +38,7 @@
 }
 .resultImageContent{
     width:100px;
+    cursor:pointer;
 }
 .resultStock{
     display:none;
