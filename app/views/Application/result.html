@@ -1,16 +1,19 @@
 #{extends 'main.html' /}
 #{set title:'Home' /}
 #{set 'moreStyles'}
-Test
 <link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/jquery.Jcrop.css'}">
 #{/set}
 
-<div style="width:100%; height:666px;background-color:#EDEDED;">
+
+
+<div style="background-color:#EDEDED;" class="yui-u first">
     #{list items:entries, as:'entry' }
     <div class="resultBlock">
         <div class="resultImageContainer">
-            #{if entry.image}<img src="getProfilePic?url=${entry.image}" alt="" class="resultImage" style="display:block;"/>#{/if}
-            #{else}<img src="@{'/public/images/contact.gif'}" alt="" class="resultImage" style="display:block;"/>#{/else}
+            <div class="resultImage">
+            #{if entry.image}<img src="getProfilePic?url=${entry.image}" alt="" class="resultImageContent" style="display:block;"/>#{/if}
+            #{else}<img src="@{'/public/images/contact.gif'}" alt="" class="resultImageContent" style="display:block;"/>#{/else}
+            </div>
             <div class="resultStock"></div>
             <div class="resultText">${entry.name}</div><div class="resultMail">${entry.email}</div><div class="resultActions"></div>
         </div>
@@ -20,6 +23,8 @@ Test
     <div style="clear:both;"></div>
     <button id="doSearch">Do Search</button>
 </div>
+
+<div class="infoblock yui-u"></div>
 
 <div id="imageEditorContainer" class="yui-g">
     <div id="result" style="font-family: monospace;" class="yui-u first"></div>
