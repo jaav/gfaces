@@ -15,16 +15,49 @@
             #{else}<img src="@{'/public/images/contact.gif'}" alt="" class="resultImageContent" style="display:block;"/>#{/else}
             </div>
             <div class="resultStock"></div>
-            <div class="resultText">${entry.name}</div><div class="resultMail">${entry.email}</div><div class="resultActions"></div>
+            <div class="resultFixer"><input type="checkbox"><span>Fix this image</span><span class="help">(?)</span></div>
+            <div class="resultText">${entry.name}</div>
+            <div class="resultMail">${entry.email}</div>
+            <div class="resultActions"></div>
         </div>
     </div>
     #{/list}
 
     <div style="clear:both;"></div>
-    <button id="doSearch">Do Search</button>
 </div>
 
-<div class="infoblock yui-u"></div>
+<div class="infoblock yui-u">
+    <form action="#" id="searchform">
+    <div class="FormContainer">
+        <ul>
+            <li class="label">Additional words to add to image search</li>
+            <li class="input"><input type="text" name="phrase" value=""/></li>
+            <li class="label">Search images based on ...</li>
+            <li class="input">
+                <ul>
+                    <li class="sublevel"><input type="checkbox" name="searchbase" value="name" checked/><span>the contact name</span></li>
+                    <li class="sublevel"><input type="checkbox" name="searchbase" value="mail" checked/><span>the contact email address</span></li>
+                </ul>
+            </li>
+            <li class="label">Searching for ...</li>
+            <li class="input">
+                <ul>
+                    <li class="sublevel"><input type="radio" name="dimension" value="icon" checked/><span>... icons</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="medium"/><span>... medium images</span></li>
+                </ul>
+            </li>
+            <li class="label">Searching for ...</li>
+            <li class="input">
+                <ul>
+                    <li class="sublevel"><input type="radio" name="imageType" value="allTypes" checked/><span>all image types</span></li>
+                    <li class="sublevel"><input type="radio" name="imageType" value="faces"/><span>faces</span></li>
+                </ul>
+            </li>
+            <li><input type="submit" value="Search now!" /></li>
+        </ul>
+    </div>
+    </form>
+</div>
 
 <div id="imageEditorContainer" class="yui-g">
     <div id="result" style="font-family: monospace;" class="yui-u first"></div>

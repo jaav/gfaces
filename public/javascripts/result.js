@@ -48,6 +48,7 @@ contacts.pasteProfilePic = function(){
             $($('.resultStock')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[i].url)+"'/>");
         }
         $($('.resultStock')[contacts.imageCounter]).append("<img src='/public/images/contact.gif'/>");
+        
         $($('.resultActions')[contacts.imageCounter]).append("<a class='imageEditingLink'>Edit</a><a class='imageReplacerLink'>Replace</a>");
         $($('.resultActions')[contacts.imageCounter]).children('.imageEditingLink').click(function(){
             var message = $(this).parent().prev().text();
@@ -83,7 +84,8 @@ contacts.initSearch = function(){
                             google.search.ImageSearch.IMAGETYPE_FACES);
 }
 
-contacts.doSearch = function(){
+contacts.doSearch = function(form){
+    var test = form
     contacts.searcher.setSearchCompleteCallback(this, contacts.pasteProfilePic);
     var test = contacts.imageCounter;
     var tteesstt = $($('.resultImageContainer')[contacts.imageCounter]);
@@ -109,7 +111,10 @@ contacts.localInit = function(){
         contacts.initSearch()   ;
     });
     contacts.init.functions.push(function() {
-        $('#doSearch').click(contacts.doSearch);
+        $('#searchform').submit(function(ev){
+            contacts.doSearch(this);
+            ev.preventDefault();
+        })
     });
 }
 
