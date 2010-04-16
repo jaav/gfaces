@@ -1,0 +1,49 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+
+<div style="background-color:#EDEDED;" class="yui-u first">
+    <div style="padding:200px 0 0;margin:0 auto;font-size:5em;color:darkslategray;text-align:center;">Contacts Query Filter</div>
+    <div style="padding:0 0 200px;margin:0 auto;font-size:2em;color:darkslategray;">
+        <form action="initFilterSearch" id="filterForm" method="POST">
+        <div class="yui-gd" style="margin:0 0 20px;">
+            <div class="yui-u first" style="text-align:right;">Namefilter:</div>
+            <div class="yui-u">
+                <ul>
+                    <li><input type="radio" name="searchFilter.nameFilter" value="N" />Show all</li>
+                    <li><input type="radio" name="searchFilter.nameFilter" value="Y" checked/>Show only those contacts that have a name filled out</li>
+                </ul>
+            </div>
+        </div>
+        <div class="yui-gd" style="margin:0 0 20px;">
+            <div class="yui-u first" style="text-align:right;">Picturefilter:</div>
+            <div class="yui-u">
+                <ul>
+                    <li><input type="radio" name="searchFilter.pictureFilter" value="N" />Show all</li>
+                    <li><input type="radio" name="searchFilter.pictureFilter" value="Y" checked/>Don't show contacts that already have a picture</li>
+                </ul>
+            </div>
+        </div>
+        <div class="yui-gd" style="margin:0 0 20px;">
+            <div class="yui-u first" style="text-align:right;">Mailfilter:</div>
+            <div class="yui-u">
+                <ul>
+                    <li><input type="radio" name="searchFilter.mailFilter" value="N" />Show all</li>
+                    <li><input type="radio" name="searchFilter.mailFilter" value="Y" checked/>Show only contacts with a 'human' email address</li>
+                </ul>
+            </div>
+        </div>
+        <div class="yui-gd" style="margin:0 0 20px;">
+            <div class="yui-u first" style="text-align:right;"></div>
+            <div class="yui-u" style="text-align:left;">
+                <input type="submit" value=" *** Show Contacts *** " style="font-size:1.2em;color:darkslategray;"/>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+<div class="infoblock yui-u"></div>
+
+#{set 'moreScripts'}
+<script src="@{'/public/javascripts/filter.js'}" type="text/javascript" ></script>
+#{/set}
