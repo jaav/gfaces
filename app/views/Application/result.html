@@ -11,11 +11,22 @@
     <div class="resultBlock">
         <div class="resultImageContainer">
             <div class="resultImage">
-            #{if entry.image}<img src="getProfilePic?url=${entry.image}" alt="" class="resultImageContent" style="display:block;"/>#{/if}
+            <!-- #{if entry.image}<img src="getProfilePic?url=${entry.image}" alt="" class="resultImageContent" style="display:block;"/>#{/if}-->
+            #{if entry.image}<img src="${entry.image}" alt="" class="resultImageContent" style="display:block;"/>#{/if}
             #{else}<img src="@{'/public/images/contact.gif'}" alt="" class="resultImageContent" style="display:block;"/>#{/else}
             </div>
+            <div class="resultImageRaw"></div>
+            <div class="resultImageOriginal">
+            #{if entry.image}<img src="${entry.image}" />#{/if}
+            </div>
             <div class="resultStock"></div>
-            <div class="resultFixer"><input type="checkbox"><span>Fix this image</span><span class="help">(?)</span></div>
+            #{if entry.image}
+                <div class="resultFixer"><input type="checkbox" checked><span>Fix this image</span><span class="help">(?)</span></div>
+            #{/if}
+            #{else}
+                <div class="resultFixer"><input type="checkbox"><span>Fix this image</span><span class="help">(?)</span></div>
+            #{/else}
+            <div class="resultId">${entry.id}</div>                                                                    
             <div class="resultText">${entry.name}</div>
             <div class="resultMail">${entry.email}</div>
             <div class="resultActions"></div>
@@ -27,6 +38,11 @@
 </div>
 
 <div class="infoblock yui-u">
+
+    <div id="imageEditorContainer" class="yui-g">
+        <div id="result" style="font-family: monospace;" class="yui-u first"></div>
+        <div id="preview_container" style="width:100px;height:100px;overflow:hidden;margin-left:5px;" class="yui-u"></div>
+    </div>
     <form action="#" id="searchform">
     <div class="FormContainer">
         <ul>
@@ -53,15 +69,17 @@
                     <li class="sublevel"><input type="radio" name="imageType" value="faces"/><span>faces</span></li>
                 </ul>
             </li>
-            <li><input type="submit" value="Search now!" /></li>
+            <li class="label">Search result size</li>
+            <li class="input">
+                <ul>
+                    <li class="sublevel"><input type="radio" name="resultSet" value="normal" checked/><span>Normal (4)</span></li>
+                    <li class="sublevel"><input type="radio" name="resultSet" value="large"/><span>Large (8)</span></li>
+                </ul>
+            </li>
+            <li><input type="submit" value="Search now!" /><input type="button" value="Page Reload!" onclick="location.reload(true);"/></li>
         </ul>
     </div>
     </form>
-</div>
-
-<div id="imageEditorContainer" class="yui-g">
-    <div id="result" style="font-family: monospace;" class="yui-u first"></div>
-    <div id="preview_container" style="width:100px;height:100px;overflow:hidden;margin-left:5px;" class="yui-u"></div>
 </div>
 
 #{set 'moreScripts'}

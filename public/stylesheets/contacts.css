@@ -27,19 +27,29 @@
     background-color:darkGray;
 }
 .resultImage{
-    width:110px;
+    width:98px;
     text-align:center;
-    height:120px;
+    height:98px;
     overflow:hidden;
     margin:0 auto;
+}
+.resultImageRaw,.resultImageOriginal{
+    visibility:hidden;
+    position:absolute;
+    left:-5000px;
 }
 .resultImageContainer{
     
 }
 .resultImageContent{
-    width:100px;
+    min-width:30px;
     cursor:pointer;
+    min-height:30px;
+    border:1px dashed #000000;
 }
 .resultStock{
+    display:none;
+}
+.resultId{
     display:none;
 }

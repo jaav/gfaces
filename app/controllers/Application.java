@@ -42,6 +42,8 @@ public class Application extends Controller {
     private static GoogleService googleService = null;
     private static final String ROOT_URL = "http://www.google.com/m8/feeds/";
     private static final String DEFAULT_FEED = ROOT_URL+"contacts/default/full";
+    private static final String DEFAULT_HOME = "http://localhost:9090/";
+    //private static final String DEFAULT_HOME = "http://www.nodecaster.com:8080/";
     private static int filterQuantity = 32;
 
     public static void index() {
@@ -65,7 +67,7 @@ public class Application extends Controller {
         if("Y".equals(searchFilter.pictureFilter)) filter.append("P");
         session.remove("filter");
         session.put("filter", filter.toString());
-        String next = "http://localhost:9009/backToFilter";
+        String next = DEFAULT_HOME+"backToFilter";
         boolean secure = false;
         boolean session = true;
         String authSubLogin = AuthSubUtil.getRequestUrl(next, ROOT_URL, secure, session);
@@ -74,7 +76,7 @@ public class Application extends Controller {
 
 
     public static void initBasicSearch(){
-        String next = "http://localhost:9009/backToBasic";
+        String next = DEFAULT_HOME+"backToBasic";
         boolean secure = false;
         boolean session = true;
         String authSubLogin = AuthSubUtil.getRequestUrl(next, ROOT_URL, secure, session);
@@ -134,6 +136,11 @@ public class Application extends Controller {
 
     }
 
+    public static void getContactsTest(String filter) {
+        renderArgs.put("entries", queryEntriesTest(filter));
+        render("Application/result.html");
+    }
+
     public static void getContacts(int from, int quantity, String filter) {
         initService();
         if(from == 0) from = 1; 
@@ -183,6 +190,7 @@ public class Application extends Controller {
             for (int i = 0; i < resultFeed.getEntries().size(); i++) {
                 ContactEntry entry = resultFeed.getEntries().get(i);
                 Contact c = new Contact();
+                c.id = entry.getId();
                 c.name = entry.getTitle().getPlainText();
                 if(entry.getContactPhotoLink() != null){
                     if(StringUtils.isNotBlank(entry.getContactPhotoLink().getHref())){
@@ -235,5 +243,25 @@ public class Application extends Controller {
     private static boolean isValidName(String name){
         if(StringUtils.isBlank(name)) return false;
         return true;
+    }
+
+    private static List<Contact> queryEntriesTest(String filter){
+        List<Contact> theContacts = new ArrayList<Contact>();
+        String[][] contacts = {
+                {"1","Jef Waumans","http://media.linkedin.com/mpr/mpr/shrink_80_80/p/2/000/033/19e/0ad1aef.jpg", "jef@waumans.net"},
+                {"2","Test test","","test@test.com"},
+                {"3","Els Verreck","","els.verreck@telenet.be"},
+                {"4","Pieter Wuyts","","pieter@8seconds.net"},
+                {"5","Frank Salliau","","frank@boek.be"}
+        };
+        SearchFilter searchFilter = new SearchFilter(filter);
+        for (int i = 0; i < contacts.length; i++) {
+            String[] contact = contacts[i];
+            if(searchFilter.filterName && !isValidName(contact[1])) continue;
+            if(searchFilter.filterPicture && StringUtils.isNotBlank(contact[2])) continue;
+            theContacts.add(new Contact(contact));
+
+        }
+        return theContacts;
     }
 }

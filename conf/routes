@@ -9,12 +9,14 @@ GET     /show                                   Application.show
 *       /initBasicSearch                        Application.initBasicSearch
 *       /initFilterSearch                       Application.initFilterSearch
 GET     /backToBasic                            Application.backToBasic
-GET     /backToFilter                            Application.backToFilter
+GET     /backToFilter                           Application.backToFilter
+GET     /getContactsTest                        Application.getContactsTest
 GET     /getContacts                            Application.getContacts
 GET     /imageMatrix                            Application.imageMatrix
 GET     /updateImageJs                          Application.updateImageJs
 GET     /getProfilePic                          Application.getProfilePic
 
+*       /bespin                                 module:bespin
 
 
 # Map static resources from the /app/public folder to the /public path
