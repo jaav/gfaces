@@ -109,10 +109,12 @@ contacts.initSearch = function(form){
     var params = $($(form).serializeArray());
     params.each(function(index, item){
         if(this.name === 'dimension'){
-            if(this.value === 'medium')
+            if(this.value === 'small')
+                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["small"]);
+            else if(this.value === 'medium')
+                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["medium"]);
+            else
                 contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["small", "medium"]);
-            else if(this.value === 'icon') 
-                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["icon"]);
         }
         if(this.name === 'imageType'){
             if(this.value === 'faces')

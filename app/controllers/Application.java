@@ -42,7 +42,7 @@ public class Application extends Controller {
     private static GoogleService googleService = null;
     private static final String ROOT_URL = "http://www.google.com/m8/feeds/";
     private static final String DEFAULT_FEED = ROOT_URL+"contacts/default/full";
-    private static final String DEFAULT_HOME = "http://localhost:9090/";
+    private static final String DEFAULT_HOME = "http://localhost:8080/";
     //private static final String DEFAULT_HOME = "http://www.nodecaster.com:8080/";
     private static int filterQuantity = 32;
 
@@ -65,7 +65,7 @@ public class Application extends Controller {
         if("Y".equals(searchFilter.mailFilter)) filter.append("M");
         if("Y".equals(searchFilter.nameFilter)) filter.append("N");
         if("Y".equals(searchFilter.pictureFilter)) filter.append("P");
-        session.remove("filter");
+        session.clear();
         session.put("filter", filter.toString());
         String next = DEFAULT_HOME+"backToFilter";
         boolean secure = false;
@@ -76,6 +76,7 @@ public class Application extends Controller {
 
 
     public static void initBasicSearch(){
+        session.clear();
         String next = DEFAULT_HOME+"backToBasic";
         boolean secure = false;
         boolean session = true;
@@ -101,7 +102,6 @@ public class Application extends Controller {
         String aToken = AuthSubUtil.getTokenFromReply(authSubLogin);*/
         try {
             String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
-            session.clear();
             session.put("token", sessionToken);
             getContacts(1, 100, "");
         } catch (IOException e) {
@@ -123,7 +123,6 @@ public class Application extends Controller {
         String aToken = AuthSubUtil.getTokenFromReply(authSubLogin);*/
         try {
             String sessionToken = AuthSubUtil.exchangeForSessionToken(token, null);
-            session.clear();
             session.put("token", sessionToken);
             getContacts(1, 100, session.get("filter"));
         } catch (IOException e) {
@@ -201,6 +200,7 @@ public class Application extends Controller {
                 if(searchFilter.filterName && !isValidName(c.name)) continue;
                 c.email = getPrimaryEmail(entry.getXmlBlob());
                 if(searchFilter.filterMail && !isValidPrimaryEmail(c.email)) continue;
+                if(!searchFilter.filterName && !isValidName(c.name) && StringUtils.isNotBlank(c.email)) c.name = c.email.substring(0, c.email.indexOf('@')).replace(".", " ");
                 contacts.add(c);
 
             }
