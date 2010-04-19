@@ -113,8 +113,10 @@ contacts.initSearch = function(form){
                 contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["small"]);
             else if(this.value === 'medium')
                 contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["medium"]);
+            else if(this.value === 'large')
+                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["large"]);
             else
-                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["small", "medium"]);
+                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["small", "medium", "large"]);
         }
         if(this.name === 'imageType'){
             if(this.value === 'faces')
@@ -157,10 +159,10 @@ contacts.executeSearch = function(phrase){
 contacts.doSearch = function(){
     contacts.searcher.setSearchCompleteCallback(this, contacts.pasteProfilePic);
     var phrase = '';
-    if(contacts.nameSearch) phrase += $($('.resultImageContainer')[contacts.imageCounter]).children('.resultText').text();
-    if(contacts.mailSearch) phrase += ' '+$($('.resultImageContainer')[contacts.imageCounter]).children('.resultMail').text();
-    phrase += ' '+contacts.phraseExtension;
-    contacts.executeSearch(phrase);
+    if(contacts.nameSearch) phrase += jQuery.trim($($('.resultImageContainer')[contacts.imageCounter]).children('.resultText').text());
+    if(contacts.mailSearch) phrase += '+'+jQuery.trim($($('.resultImageContainer')[contacts.imageCounter]).children('.resultMail').text());
+    phrase += '+'+jQuery.trim(contacts.phraseExtension);
+    contacts.executeSearch(phrase.replace(' ', '+'));
 }
 
 
@@ -212,6 +214,12 @@ contacts.OnSearchComplete = function() {
         $("#result img")
 
     }
+}
+
+contacts.selectAll = function(){
+    $(".resultImageContent").each(function(){
+        if($(this).attr('src') === '/public/images/contact.gif') $(this).parents(".resultImageContainer").find("input").attr('checked', true);
+    })
 }
 
 

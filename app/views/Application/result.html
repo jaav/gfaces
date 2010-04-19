@@ -51,33 +51,37 @@
             <li class="label">Search images based on ...</li>
             <li class="input">
                 <ul>
-                    <li class="sublevel"><input type="checkbox" name="searchbase" value="name" checked/><span>the contact name</span></li>
-                    <li class="sublevel"><input type="checkbox" name="searchbase" value="mail" checked/><span>the contact email address</span></li>
+                    <li class="sublevel"><input type="checkbox" name="searchbase" value="name" checked="true" /><span>the contact name</span></li>
+                    <li class="sublevel"><input type="checkbox" name="searchbase" value="mail" checked="true" /><span>the contact email address</span></li>
                 </ul>
             </li>
             <li class="label">Searching for ...</li>
             <li class="input">
                 <ul>
-                    <li class="sublevel"><input type="radio" name="dimension" value="small" checked/><span>... small images</span></li>
-                    <li class="sublevel"><input type="radio" name="dimension" value="medium"/><span>... medium images</span></li>
-                    <li class="sublevel"><input type="radio" name="dimension" value="small+medium"/><span>... all images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="small" /><span>... small images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="medium" checked="true" /><span>... medium images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="large" checked="true" /><span>... large images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="small+medium+large" /><span>... all images</span></li>
                 </ul>
             </li>
             <li class="label">Searching for ...</li>
             <li class="input">
                 <ul>
-                    <li class="sublevel"><input type="radio" name="imageType" value="allTypes" checked/><span>all image types</span></li>
-                    <li class="sublevel"><input type="radio" name="imageType" value="faces"/><span>faces</span></li>
+                    <li class="sublevel"><input type="radio" name="imageType" value="allTypes" /><span>all image types</span></li>
+                    <li class="sublevel"><input type="radio" name="imageType" value="faces" checked="true" /><span>faces</span></li>
                 </ul>
             </li>
             <li class="label">Search result size</li>
             <li class="input">
                 <ul>
-                    <li class="sublevel"><input type="radio" name="resultSet" value="normal" checked/><span>Normal (4)</span></li>
-                    <li class="sublevel"><input type="radio" name="resultSet" value="large"/><span>Large (8)</span></li>
+                    <li class="sublevel"><input type="radio" name="resultSet" value="normal" checked="true" /><span>Normal (4)</span></li>
+                    <li class="sublevel"><input type="radio" name="resultSet" value="large" /><span>Large (8)</span></li>
                 </ul>
             </li>
-            <li><input type="submit" value="Search now!" /><input type="button" value="Page Reload!" onclick="location.reload(true);"/></li>
+            <li>
+                <input type="submit" value="Search now!" /><input type="button" value="Page Reload!" onclick="location.reload(true);" /><br/><br/>
+                <input type="button" value="Select all" onclick="contacts.selectAll();" /><input type="button" value="Select all with images" onclick="contacts.selectAll();" />
+            </li>
         </ul>
     </div>
     </form>

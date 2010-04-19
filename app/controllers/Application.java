@@ -42,8 +42,8 @@ public class Application extends Controller {
     private static GoogleService googleService = null;
     private static final String ROOT_URL = "http://www.google.com/m8/feeds/";
     private static final String DEFAULT_FEED = ROOT_URL+"contacts/default/full";
-    private static final String DEFAULT_HOME = "http://localhost:8080/";
-    //private static final String DEFAULT_HOME = "http://www.nodecaster.com:8080/";
+    //private static final String DEFAULT_HOME = "http://localhost:8080/";
+    private static final String DEFAULT_HOME = "http://www.nodecaster.com:8080/";
     private static int filterQuantity = 32;
 
     public static void index() {
