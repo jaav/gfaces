@@ -3,28 +3,38 @@ google.load('search', '1');
 contacts.imgWidth = 0;
 contacts.imgHeight = 0;
 
+
+
 contacts.showPreview = function (coords){
-    var rx = 100 / coords.w;
-    var ry = 100 / coords.h;
+    var rx = 96 / coords.w;
+    var ry = 96 / coords.h;
 
     $('#preview').css({
-        width: Math.round(rx * 240) + 'px',
-        height: Math.round(ry * 240) + 'px',
+        width: Math.round(rx * contacts.imgWidth) + 'px',
+        height: Math.round(ry * contacts.imgHeight) + 'px',
         marginLeft: '-' + Math.round(rx * coords.x) + 'px',
         marginTop: '-' + Math.round(ry * coords.y) + 'px'
     });
 };
 
-
 contacts.modifyProfilePic = function(ev){
+    var container = $(ev.target).parents('.resultImageContainer');
+    $('#imageEditorContainer').css({
+        "left": ($(window).width()-$('#imageEditorContainer').width())/2,
+        "top": ($(window).height()-$('#imageEditorContainer').height())/2
+    });
     $('#imageEditorContainer').fadeIn();
-    var test = $(ev.target).parent();
-    test = $(ev.target).parent().first();
-    var selectedImage = $(ev.target).parent().children().first();
+    var selectedImage = container.find('.resultImageContent');
+    contacts.imgWidth = selectedImage.width();
+    contacts.imgHeight = selectedImage.height();
     $('#result').empty();
     $('#preview_container').empty();
-    $('#result').append("<img src='/public/images/bigger.jpg' id='mainImage'/>");
+    $('#result').append("<img src='"+selectedImage.attr('src')+"' id='mainImage'/>");
     $('#preview_container').append("<img src='"+selectedImage.attr('src')+"' id='preview'/>");
+    var confirm = $('<button>Confirm</button>').click(function(ev){
+        alert("now paste the result back to the image of origin");
+    });
+    $('.confirmActions').empty().append(confirm);
     $(function() {
         $('#mainImage').Jcrop({
             onChange: contacts.showPreview,
@@ -40,21 +50,9 @@ contacts.getImageUrl = function(url){
 }
 
 
-contacts.showPreview = function (coords){
-    var rx = 96 / coords.w;
-    var ry = 96 / coords.h;
-
-    $('#preview').css({
-        width: Math.round(rx * contacts.imgWidth) + 'px',
-        height: Math.round(ry * contacts.imgHeight) + 'px',
-        marginLeft: '-' + Math.round(rx * coords.x) + 'px',
-        marginTop: '-' + Math.round(ry * coords.y) + 'px'
-    });
-};
-
 contacts.pasteProfilePic = function(){
 
-    var test = contacts.searcher.results;
+    var test = contacts.searcher;
     if(contacts.searcher.results.length >0){
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').attr('src', contacts.getImageUrl(contacts.searcher.results[0].url+"#0"));
         $($('.resultImageRaw')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[0].url)+"#0'/>");
@@ -64,14 +62,16 @@ contacts.pasteProfilePic = function(){
         $($('.resultStock')[contacts.imageCounter]).append("<img src='/public/images/contact.gif'/>");
         if($($('.resultImageOriginal')[contacts.imageCounter]).children('img'))
             $($('.resultStock')[contacts.imageCounter]).append("<img src='"+$($('.resultImageOriginal')[contacts.imageCounter]).children('img').attr('src')+"'/>"); 
-        
-        var container = $($('.resultActions')[contacts.imageCounter]).append("<a class='imageEditingLink' href='#'>Edit</a>");
+        var test = $("<a class='imageEditingLink' href='#'>Edit</a>").click(function(ev){
+            contacts.modifyProfilePic(ev)
+        });
+        $($('.resultActions')[contacts.imageCounter]).append(test);
+
+        /*$(".imageEditingLink").
         container.children().click(function(ev){
             ev.preventDefault();
             $('#imageEditorContainer').css('display', 'block');
             var selectedImage = $(this).parents('.resultImageContainer').find('.resultImageRaw > img');
-            contacts.imgWidth = selectedImage.width();
-            contacts.imgHeight = selectedImage.height();
             $('#result').empty();
             $('#result').append("<img src='"+selectedImage.attr('src')+"' id='mainImage'/>");
             $('#preview_container').append("<img src='"+selectedImage.attr('src')+"' id='preview'/>");
@@ -82,7 +82,7 @@ contacts.pasteProfilePic = function(){
                     aspectRatio: 1
                 });
             });
-        });
+        });*/
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').click(function(){
             var test = $(this).parent();
             test = $(this).parent().nextAll('.resultStock');
@@ -105,7 +105,8 @@ contacts.pasteProfilePic = function(){
 contacts.imageCounter = 0;
 
 contacts.initSearch = function(form){
-    contacts.searcher = new google.search.ImageSearch();
+    if(!contacts.searcher) contacts.searcher = new google.search.ImageSearch();
+    contacts.resetSearcherObject();
     var params = $($(form).serializeArray());
     params.each(function(index, item){
         if(this.name === 'dimension'){
@@ -116,7 +117,7 @@ contacts.initSearch = function(form){
             else if(this.value === 'large')
                 contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["large"]);
             else
-                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["small", "medium", "large"]);
+                contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGESIZE,["icon", "small", "medium", "large"]);
         }
         if(this.name === 'imageType'){
             if(this.value === 'faces')
@@ -129,8 +130,8 @@ contacts.initSearch = function(form){
             if(this.value === 'mail')
                 contacts.mailSearch = true;
         }
-        if(this.name === 'phrase'){
-            contacts.phraseExtension = this.value;
+        if(this.name === 'domain'){
+            contacts.domainSearch = this.value;
         }
         if(this.name === 'resultSet'){
             if(this.value === 'normal')
@@ -159,10 +160,15 @@ contacts.executeSearch = function(phrase){
 contacts.doSearch = function(){
     contacts.searcher.setSearchCompleteCallback(this, contacts.pasteProfilePic);
     var phrase = '';
+    var betweener = '';
+    if(contacts.nameSearch && contacts.mailSearch) betweener = ' OR ';
     if(contacts.nameSearch) phrase += jQuery.trim($($('.resultImageContainer')[contacts.imageCounter]).children('.resultText').text());
-    if(contacts.mailSearch) phrase += '+'+jQuery.trim($($('.resultImageContainer')[contacts.imageCounter]).children('.resultMail').text());
-    phrase += '+'+jQuery.trim(contacts.phraseExtension);
-    contacts.executeSearch(phrase.replace(' ', '+'));
+    phrase += betweener;
+    if(contacts.mailSearch) phrase += jQuery.trim($($('.resultImageContainer')[contacts.imageCounter]).children('.resultMail').text());
+    //if(jQuery.trim(contacts.phraseExtension)) phrase += ' '+jQuery.trim(contacts.phraseExtension);
+    //contacts.executeSearch(phrase.replace(' ', '%20'));
+    if(contacts.domainSearch) contacts.searcher.setSiteRestriction(contacts.domainSearch);
+    contacts.executeSearch(contacts.cleanSearchObject(phrase));
 }
 
 
@@ -178,30 +184,6 @@ contacts.pageReset = function(){
     });
 }
 
-contacts.localInit = function(){
-    contacts.totalImages = $('.resultBlock').length;    
-    contacts.init.functions.push(function(){
-        $(".imageEditingLink").click(function(ev){contacts.modifyProfilePic(ev)});
-    });
-    /*contacts.init.functions.push(function(){
-        $('#imageEditorContainer').css({
-            "left": ($(window).width()-$('#imageEditorContainer').width())/2,
-            "top": ($(window).height()-$('#imageEditorContainer').height())/2
-        });
-    });*/
-    contacts.init.functions.push(function() {
-        $('#searchform').submit(function(ev){
-            ev.preventDefault();
-            //setting counter back to 0. Needed for the next time the user clicks the search button
-            contacts.pageReset();
-            contacts.initSearch(this);
-            contacts.doSearch();
-        })
-    });
-}
-
-
-
 
 contacts.OnSearchComplete = function() {
     if (contacts.results &&  contacts.results.length > 0) {
@@ -216,10 +198,64 @@ contacts.OnSearchComplete = function() {
     }
 }
 
+contacts.selectAllWithImages = function(){
+    $(".resultImageContent").each(function(){
+        if($(this).attr('src') === '/public/images/contact.gif') $(this).parents(".resultImageContainer").find("input").attr('checked', false);
+        else $(this).parents(".resultImageContainer").find("input").attr('checked', true);
+    })
+}
+
 contacts.selectAll = function(){
     $(".resultImageContent").each(function(){
-        if($(this).attr('src') === '/public/images/contact.gif') $(this).parents(".resultImageContainer").find("input").attr('checked', true);
+        $(this).parents(".resultImageContainer").find("input").attr('checked', true);
     })
+}
+
+contacts.unselectAll = function(){
+    $(".resultImageContent").each(function(){
+        $(this).parents(".resultImageContainer").find("input").attr('checked', false);
+    })
+}
+
+contacts.cleanSearchObject = function(phrase){
+    return phrase.replace(/[^a-zA-Z 0-9@\\.]+/g,'');
+
+}
+
+contacts.resetSearcherObject = function(){
+    contacts.nameSearch = false;
+    contacts.mailSearch = false;
+    contacts.searcher.setRestriction(google.search.ImageSearch.RESTRICT_IMAGETYPE);
+    contacts.searcher.setSiteRestriction(null);
+}
+
+contacts.doSubmit = function(){
+    var imagePoster = $('#imagePoster');
+    $('.resultImageContainer').each(function(index){
+        imagePoster.append($('<input type="hidden" name="image_'+index+'" value="'+$(this).find('.resultImage > img').attr('src')+'" />'));
+        imagePoster.append($('<input type="hidden" name="id_'+index+'" value="'+$(this).find('.resultId').text()+'" />'));
+
+    });
+    imagePoster.submit();
+}
+
+contacts.hide = function(id){
+    $(id).fadeOut();
+}
+
+contacts.localInit = function(){
+    contacts.totalImages = $('.resultBlock').length;
+    /*contacts.init.functions.push(function(){
+    });*/
+    contacts.init.functions.push(function() {
+        $('#searchform').submit(function(ev){
+            ev.preventDefault();
+            //setting counter back to 0. Needed for the next time the user clicks the search button
+            contacts.pageReset();
+            contacts.initSearch(this);
+            contacts.doSearch();
+        })
+    });
 }
 
 

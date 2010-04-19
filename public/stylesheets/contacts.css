@@ -53,3 +53,34 @@
 .resultId{
     display:none;
 }
+.notDisplayed{
+    display:none;
+}
+.big_60{
+    width:60%;
+}
+.big_80{
+    width:80%;
+}
+.max{
+    width:100%;
+}
+.modificationPane{
+    width:492px;
+    float:left;
+}
+
+.modificationResultPane{
+    width:98px;
+    height:98px;
+    overflow:hidden;
+    margin-left:5px;
+    float:left;
+}
+.modificationContainer{
+    width:600px;
+}
+.confirmActions{
+    float:right;
+    height:20px;
+}

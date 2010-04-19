@@ -6,6 +6,15 @@
 
 
 
+<div id="imageEditorContainer" class="modificationContainer">
+    <div class="actions"><button onclick="contacts.hide('#imageEditorContainer')">Hide</button></div>
+    <div>
+        <div id="result" style="font-family: monospace;" class="modificationPane"></div>
+        <div id="preview_container" class="modificationResultPane"></div>
+    </div>
+    <div class="confirmActions"></div>
+</div>
+
 <div style="background-color:#EDEDED;" class="yui-u first">
     #{list items:entries, as:'entry' }
     <div class="resultBlock">
@@ -38,16 +47,22 @@
 </div>
 
 <div class="infoblock yui-u">
-
-    <div id="imageEditorContainer" class="yui-g">
-        <div id="result" style="font-family: monospace;" class="yui-u first"></div>
-        <div id="preview_container" style="width:100px;height:100px;overflow:hidden;margin-left:5px;" class="yui-u"></div>
-    </div>
     <form action="#" id="searchform">
     <div class="FormContainer">
         <ul>
-            <li class="label">Additional words to add to image search</li>
-            <li class="input"><input type="text" name="phrase" value=""/></li>
+            <li class="label">Search within a social domain</li>
+            <li class="input">
+                <SELECT name="domain">
+                      <OPTION selected value="">www (no restriction)</OPTION>
+                      <OPTION value="facebook.com">Facebook</OPTION>
+                      <OPTION value="twitter.com">Twitter</OPTION>
+                      <OPTION value="">Another</OPTION>
+                      <OPTION value="">Another</OPTION>
+                      <OPTION value="">Another</OPTION>
+                      <OPTION value="">Another</OPTION>
+                   </SELECT>
+
+            </li>
             <li class="label">Search images based on ...</li>
             <li class="input">
                 <ul>
@@ -59,32 +74,40 @@
             <li class="input">
                 <ul>
                     <li class="sublevel"><input type="radio" name="dimension" value="small" /><span>... small images</span></li>
-                    <li class="sublevel"><input type="radio" name="dimension" value="medium" checked="true" /><span>... medium images</span></li>
-                    <li class="sublevel"><input type="radio" name="dimension" value="large" checked="true" /><span>... large images</span></li>
-                    <li class="sublevel"><input type="radio" name="dimension" value="small+medium+large" /><span>... all images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="medium" /><span>... medium images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="large" /><span>... large images</span></li>
+                    <li class="sublevel"><input type="radio" name="dimension" value="small+medium+large"  checked="true" /><span>... all images</span></li>
                 </ul>
             </li>
             <li class="label">Searching for ...</li>
             <li class="input">
                 <ul>
-                    <li class="sublevel"><input type="radio" name="imageType" value="allTypes" /><span>all image types</span></li>
-                    <li class="sublevel"><input type="radio" name="imageType" value="faces" checked="true" /><span>faces</span></li>
+                    <li class="sublevel"><input type="radio" name="imageType" value="allTypes" checked="true" /><span>all image types</span></li>
+                    <li class="sublevel"><input type="radio" name="imageType" value="faces" /><span>faces</span></li>
                 </ul>
             </li>
             <li class="label">Search result size</li>
             <li class="input">
                 <ul>
-                    <li class="sublevel"><input type="radio" name="resultSet" value="normal" checked="true" /><span>Normal (4)</span></li>
-                    <li class="sublevel"><input type="radio" name="resultSet" value="large" /><span>Large (8)</span></li>
+                    <li class="sublevel"><input type="radio" name="resultSet" value="normal" /><span>Normal (4)</span></li>
+                    <li class="sublevel"><input type="radio" name="resultSet" value="large" checked="true" /><span>Large (8)</span></li>
                 </ul>
             </li>
             <li>
-                <input type="submit" value="Search now!" /><input type="button" value="Page Reload!" onclick="location.reload(true);" /><br/><br/>
-                <input type="button" value="Select all" onclick="contacts.selectAll();" /><input type="button" value="Select all with images" onclick="contacts.selectAll();" />
+                <input type="submit" value="Search now!" /><input type="button" value="Page Reload!" onclick="location.reload(true);" />
+            </li>
+            <li>
+                <input type="button" value="Fix all with images" onclick="contacts.selectAllWithImages();" />&nbsp;<input type="button" value="Fix all" onclick="contacts.selectAll();" />&nbsp;<input type="button" value="Unfix all" onclick="contacts.unselectAll();" />
+            </li>
+            <li>
+                <input type="button" value="Submit all 'Fixed' images" onclick="contacts.doSubmit();" />
             </li>
         </ul>
     </div>
     </form>
+    <div class="notDisplayed">
+        <form action="http://localhost:9089/doSubmitImages" method="POST" id="imagePoster"></form>
+    </div>
 </div>
 
 #{set 'moreScripts'}

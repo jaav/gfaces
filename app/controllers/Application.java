@@ -248,8 +248,8 @@ public class Application extends Controller {
     private static List<Contact> queryEntriesTest(String filter){
         List<Contact> theContacts = new ArrayList<Contact>();
         String[][] contacts = {
-                {"1","Jef Waumans","http://media.linkedin.com/mpr/mpr/shrink_80_80/p/2/000/033/19e/0ad1aef.jpg", "jef@waumans.net"},
-                {"2","Test test","","test@test.com"},
+                {"1","Jef, Waumans","http://media.linkedin.com/mpr/mpr/shrink_80_80/p/2/000/033/19e/0ad1aef.jpg", "jef@waumans.net"},
+                {"2","Test test","","test@test.com "},
                 {"3","Els Verreck","","els.verreck@telenet.be"},
                 {"4","Pieter Wuyts","","pieter@8seconds.net"},
                 {"5","Frank Salliau","","frank@boek.be"}
