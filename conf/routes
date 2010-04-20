@@ -15,6 +15,7 @@ GET     /getContacts                            Application.getContacts
 GET     /imageMatrix                            Application.imageMatrix
 GET     /updateImageJs                          Application.updateImageJs
 GET     /getProfilePic                          Application.getProfilePic
+POST    /doSubmitImages                         Application.doSubmitImages
 
 *       /bespin                                 module:bespin
 

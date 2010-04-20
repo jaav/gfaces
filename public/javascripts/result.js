@@ -32,7 +32,8 @@ contacts.modifyProfilePic = function(ev){
     $('#result').append("<img src='"+selectedImage.attr('src')+"' id='mainImage'/>");
     $('#preview_container').append("<img src='"+selectedImage.attr('src')+"' id='preview'/>");
     var confirm = $('<button>Confirm</button>').click(function(ev){
-        alert("now paste the result back to the image of origin");
+        selectedImage.attr('style', $(ev.target).parents('#imageEditorContainer').find('#preview').attr('style'));
+        $('#imageEditorContainer').fadeOut();
     });
     $('.confirmActions').empty().append(confirm);
     $(function() {
@@ -62,27 +63,11 @@ contacts.pasteProfilePic = function(){
         $($('.resultStock')[contacts.imageCounter]).append("<img src='/public/images/contact.gif'/>");
         if($($('.resultImageOriginal')[contacts.imageCounter]).children('img'))
             $($('.resultStock')[contacts.imageCounter]).append("<img src='"+$($('.resultImageOriginal')[contacts.imageCounter]).children('img').attr('src')+"'/>"); 
-        var test = $("<a class='imageEditingLink' href='#'>Edit</a>").click(function(ev){
+        var edit = $("<a class='imageEditingLink' href='#'>Edit</a>").click(function(ev){
             contacts.modifyProfilePic(ev)
         });
-        $($('.resultActions')[contacts.imageCounter]).append(test);
+        $($('.resultActions')[contacts.imageCounter]).append(edit);
 
-        /*$(".imageEditingLink").
-        container.children().click(function(ev){
-            ev.preventDefault();
-            $('#imageEditorContainer').css('display', 'block');
-            var selectedImage = $(this).parents('.resultImageContainer').find('.resultImageRaw > img');
-            $('#result').empty();
-            $('#result').append("<img src='"+selectedImage.attr('src')+"' id='mainImage'/>");
-            $('#preview_container').append("<img src='"+selectedImage.attr('src')+"' id='preview'/>");
-            $(function() {
-                $('#mainImage').Jcrop({
-                    onChange: contacts.showPreview,
-                    onSelect: contacts.showPreview,
-                    aspectRatio: 1
-                });
-            });
-        });*/
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').click(function(){
             var test = $(this).parent();
             test = $(this).parent().nextAll('.resultStock');
@@ -234,6 +219,7 @@ contacts.doSubmit = function(){
     $('.resultImageContainer').each(function(index){
         imagePoster.append($('<input type="hidden" name="image_'+index+'" value="'+$(this).find('.resultImage > img').attr('src')+'" />'));
         imagePoster.append($('<input type="hidden" name="id_'+index+'" value="'+$(this).find('.resultId').text()+'" />'));
+        imagePoster.append($('<input type="hidden" name="style_'+index+'" value="'+$(this).find('.resultImage > img').attr('style')+'" />'));
 
     });
     imagePoster.submit();

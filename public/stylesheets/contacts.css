@@ -53,6 +53,9 @@
 .resultId{
     display:none;
 }
+.resultCoord{
+    display:none;
+}
 .notDisplayed{
     display:none;
 }

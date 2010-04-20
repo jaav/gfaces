@@ -2,12 +2,13 @@ package controllers;
 
 import play.mvc.*;
 
-import java.net.URL;
-import java.net.MalformedURLException;
+import java.net.*;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -31,8 +32,10 @@ import com.google.gdata.util.XmlBlob;
 import exceptions.NotAuthenticatedException;
 import org.omg.PortableInterceptor.RequestInfo;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.io.IOUtils;
 import models.Contact;
 import models.SearchFilter;
+import models.Image;
 
 public class Application extends Controller {
 
@@ -175,6 +178,41 @@ public class Application extends Controller {
 
     }
 
+    public static void doSubmitImages(){
+        Map imagesInfo = params.allSimple();
+        int imageCount = (int)Math.floor(imagesInfo.size()/3);
+        Image[] images = new Image[imageCount];
+        for (Object key : imagesInfo.keySet()) {
+            String[] parts = ((String)key).split("_");
+            if(parts.length == 2){
+                Image current = new Image();
+                if("id".equals(parts[0])) current.contact_id = (String)imagesInfo.get(key);
+                else if("image".equals(parts[0])) try {
+                    current.url = URLDecoder.decode((String)imagesInfo.get(key), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+                else if("style".equals(parts[0])) current.style = ((String)imagesInfo.get(key)).replaceAll(" ", "");
+                else System.out.println("This shouldn't happen! Check Application.class code line 191");
+                images[Integer.parseInt(parts[1])] = current;
+            }
+        }
+        processImagesTest();
+        //processImages(images);
+    }
+
+    private static void processImages(Image[] images){
+        for (int i = 0; i < images.length; i++) {
+            Image image = images[i];
+            //download the image, give it a unique name and store it locally with the extension set to the corresponding mime type
+
+            //process the image
+
+            //add the unique name to the object
+        }
+        
+    }
+
     private static List<Contact> queryEntries(int from, int quantity, String filter)
             throws IOException, ServiceException {
         Query myQuery = new Query(new URL(DEFAULT_FEED));
@@ -245,6 +283,20 @@ public class Application extends Controller {
         return true;
     }
 
+    private static String getExtension(String contentType){
+        if(contentType.indexOf("jpeg")>0) return ".jpg";
+        if(contentType.indexOf("png")>0) return ".png";
+        if(contentType.indexOf("gif")>0) return ".gif";
+        else return "";
+    }
+
+
+    /****************************************************************
+     *
+     * Tests
+     *
+     ****************************************************************/
+
     private static List<Contact> queryEntriesTest(String filter){
         List<Contact> theContacts = new ArrayList<Contact>();
         String[][] contacts = {
@@ -264,4 +316,88 @@ public class Application extends Controller {
         }
         return theContacts;
     }
+
+    private static String getImageDimension(String path, String image){
+        //identify -format '%k' tree.gif
+        String command="C:/jwmcwt6/downloads/ImageMagick-6.6.1-4/identify -format %w "+path+image;
+        try{
+            Process proc =Runtime.getRuntime().exec(command);
+            InputStream stream = proc.getInputStream();
+            String dim = IOUtils.toString(stream);
+            System.out.println("command = " + command);
+            System.out.println("Image Dimension: "+dim);
+            return dim;
+        }catch(Exception e){
+            System.out.println("error");
+        }
+        return null;
+    }
+
+    private static String getStylesWidth(String style){
+        int widthStart = style.indexOf("width:")+6;
+        return style.substring(widthStart, style.indexOf("px", widthStart));
+    }
+
+    private static void runIMProcess(String path, Image[] images){
+        for (int i = 0; i < images.length; i++) {
+            Image image = images[i];
+            try{
+                String test =getImageDimension(path, image.name).replaceAll("\\D", "");
+                int realWidth = Integer.parseInt(getImageDimension(path, image.name).replaceAll("\\D", ""));
+                int stylesWidth = Integer.parseInt(getStylesWidth(image.style));
+                int scale = Math.round(stylesWidth*100/realWidth);
+                //String command="C:/jwmcwt6/downloads/ImageMagick-6.6.1-4/convert "+path+"im.jpg -resize 150%  "+path +"new_im.jpg -crop 180x180+10+10  "+path+"crop.gif";
+                String command="C:/jwmcwt6/downloads/ImageMagick-6.6.1-4/convert "+path+image.name+" -resize "+scale+"%  "+path+image.name+" -crop 96x96+0+0 "+path+image.name;
+                Process proc =Runtime.getRuntime().exec(command);
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void processImagesTest(){
+        String path = "C:/jwmcwt6/toDelete/";
+        Image[] images = new Image[3];
+        images[0] = new Image();
+        images[1] = new Image();
+        images[2] = new Image();
+        images[0].contact_id = "1";
+        images[0].style = "width:291px;height:205px;margin-left:-170px;margin-top:0px;";
+        images[0].url = "http://localhost/nodecaster/images/one.jpg";
+        images[1].contact_id = "2";
+        images[1].style = "width:373px;height:505px;margin-left:-242px;margin-top:-115px;";
+        images[1].url = "http://localhost/nodecaster/images/two.jpg";
+        images[2].contact_id = "3";
+        images[2].style = "width:291px;height:194px;margin-left:-59px;margin-top:-39px;";
+        images[2].url = "http://localhost/nodecaster/images/three.jpg";
+        for (int i = 0; i < images.length; i++) {
+            Image image = images[i];
+            String name = UUID.randomUUID().toString();
+            //download the image, give it a unique name and store it locally with the extension set to the corresponding mime type
+            try {
+                URL url = new URL(image.url);
+                HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+                conn.connect();
+                String strStatus = conn.getResponseMessage() + " (" + conn.getResponseCode() + ")";
+                String strContentType = conn.getContentType();
+                InputStream is = conn.getInputStream();
+                String ext = getExtension(conn.getContentType());
+                FileOutputStream fos = new FileOutputStream(new File(path+name+ext));
+                image.name = name+ext;
+                IOUtils.copy(is, fos);
+                is.close();
+                fos.close();
+                conn.disconnect();
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+
+        //process the images
+        runIMProcess(path, images);
+        //add the unique name to the object
+
+    }
+
+    
 }
