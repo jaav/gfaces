@@ -47,10 +47,7 @@
     min-height:30px;
     border:1px dashed #000000;
 }
-.resultStock{
-    display:none;
-}
-.resultId{
+.resultStock, .resultId, .etag, .editLink{
     display:none;
 }
 .resultCoord{

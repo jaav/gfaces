@@ -32,7 +32,10 @@ contacts.modifyProfilePic = function(ev){
     $('#result').append("<img src='"+selectedImage.attr('src')+"' id='mainImage'/>");
     $('#preview_container').append("<img src='"+selectedImage.attr('src')+"' id='preview'/>");
     var confirm = $('<button>Confirm</button>').click(function(ev){
+        ev.preventDefault();
         selectedImage.attr('style', $(ev.target).parents('#imageEditorContainer').find('#preview').attr('style'));
+        //container.find('.resultTypeText').html('<b>New Image</b>');
+        container.find('input').attr('checked', 'true');
         $('#imageEditorContainer').fadeOut();
     });
     $('.confirmActions').empty().append(confirm);
@@ -57,12 +60,19 @@ contacts.pasteProfilePic = function(){
     if(contacts.searcher.results.length >0){
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').attr('src', contacts.getImageUrl(contacts.searcher.results[0].url+"#0"));
         $($('.resultImageRaw')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[0].url)+"#0'/>");
+        test = $('.resultTypeText');
+        test = $($('.resultTypeText'));
+        test = $($('.resultImageOriginal')[contacts.imageCounter]).children('img').length;
         for(var i = 0; i<contacts.searcher.results.length; i++){
             $($('.resultStock')[contacts.imageCounter]).append("<img src='"+contacts.getImageUrl(contacts.searcher.results[i].url)+"#"+i+"'/>");
         }
+        if($($('.resultImageOriginal')[contacts.imageCounter]).children('img').length == 0)
+            $($('.resultTypeText')[contacts.imageCounter]).html('New Image');
+        else
+            $($('.resultStock')[contacts.imageCounter]).append($($('.resultImageOriginal')[contacts.imageCounter]).children('img').clone());
         $($('.resultStock')[contacts.imageCounter]).append("<img src='/public/images/contact.gif'/>");
-        if($($('.resultImageOriginal')[contacts.imageCounter]).children('img'))
-            $($('.resultStock')[contacts.imageCounter]).append("<img src='"+$($('.resultImageOriginal')[contacts.imageCounter]).children('img').attr('src')+"'/>"); 
+        /*if($($('.resultImageOriginal')[contacts.imageCounter]).children('img'))
+            $($('.resultStock')[contacts.imageCounter]).append("<img src='"+$($('.resultImageOriginal')[contacts.imageCounter]).children('img').attr('src')+"'/>");*/
         var edit = $("<a class='imageEditingLink' href='#'>Edit</a>").click(function(ev){
             contacts.modifyProfilePic(ev)
         });
@@ -71,11 +81,14 @@ contacts.pasteProfilePic = function(){
         $($('.resultImage')[contacts.imageCounter]).children('.resultImageContent').click(function(){
             var test = $(this).parent();
             test = $(this).parent().nextAll('.resultStock');
+            var original = $(this).parent().nextAll('.resultImageOriginal').children('img');
+            var messageBox = $(this).parent().nextAll('.resultTypeText');
             var stock = $(this).parent().nextAll('.resultStock').children('img');
             for(var i = 0; i<stock.length; i++){
                 if($(this).attr('src') === $(stock[i]).attr('src')){
                     if(stock[i+1]) $(this).attr('src', $(stock[i+1]).attr('src'));
                     else $(this).attr('src', $(stock[0]).attr('src'));
+                    if(original && $(this).attr('src') === original.attr('src')) messageBox.html('Existing Contact image')
                     $(this).parent().next('.resultImageRaw').children('img').attr('src', $(this).attr('src'));
                     break;
                 }
@@ -216,10 +229,20 @@ contacts.resetSearcherObject = function(){
 
 contacts.doSubmit = function(){
     var imagePoster = $('#imagePoster');
+    var counter = 0;
     $('.resultImageContainer').each(function(index){
-        imagePoster.append($('<input type="hidden" name="image_'+index+'" value="'+$(this).find('.resultImage > img').attr('src')+'" />'));
-        imagePoster.append($('<input type="hidden" name="id_'+index+'" value="'+$(this).find('.resultId').text()+'" />'));
-        imagePoster.append($('<input type="hidden" name="style_'+index+'" value="'+$(this).find('.resultImage > img').attr('style')+'" />'));
+        //@todo !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //if checked
+        if($($(this).find("input")).attr('checked')){
+            //if src of new  != src of original do next
+            imagePoster.append($('<input type="hidden" name="image_'+counter+'" value="'+$(this).find('.resultImage > img').attr('src')+'" />'));
+            //imagePoster.append($('<input type="hidden" name="link_'+counter+'" value="'+$(this).find('.resultId').text()+'" />'));
+            imagePoster.append($('<input type="hidden" name="editLink_'+counter+'" value="'+$(this).find('.editLink').html()+'" />'));
+            var etag = $(this).find('.etag').text();
+            if(etag) imagePoster.append($('<input type="hidden" name="etag_'+counter+'" value="'+etag+'" />'));
+            imagePoster.append($('<input type="hidden" name="style_'+counter+'" value="'+$(this).find('.resultImage > img').attr('style')+'" />'));
+            counter++;
+        }
 
     });
     imagePoster.submit();

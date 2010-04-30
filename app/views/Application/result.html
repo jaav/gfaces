@@ -20,22 +20,29 @@
     <div class="resultBlock">
         <div class="resultImageContainer">
             <div class="resultImage">
-            <!-- #{if entry.image}<img src="getProfilePic?url=${entry.image}" alt="" class="resultImageContent" style="display:block;"/>#{/if}-->
-            #{if entry.image}<img src="${entry.image}" alt="" class="resultImageContent" style="display:block;"/>#{/if}
+            #{if entry.image_link_href}<img src="${entry.image_link_href}" alt="" class="resultImageContent" style="display:block;"/>#{/if}
             #{else}<img src="@{'/public/images/contact.gif'}" alt="" class="resultImageContent" style="display:block;"/>#{/else}
             </div>
             <div class="resultImageRaw"></div>
-            <div class="resultImageOriginal">
-            #{if entry.image}<img src="${entry.image}" />#{/if}
-            </div>
-            <div class="resultStock"></div>
-            #{if entry.image}
-                <div class="resultFixer"><input type="checkbox" checked><span>Fix this image</span><span class="help">(?)</span></div>
+            #{if entry.image_link_href}
+                <div class="resultImageOriginal"><img src="${entry.image_link_href}" /></div>
+                <div class="resultStock"><img src="${entry.image_link_href}" /></div>
             #{/if}
             #{else}
-                <div class="resultFixer"><input type="checkbox"><span>Fix this image</span><span class="help">(?)</span></div>
+                <div class="resultImageOriginal"></div>
+                <div class="resultStock"></div>
             #{/else}
-            <div class="resultId">${entry.id}</div>
+            <div class="imageControls">
+            #{if entry.image_link_href}
+                <div class="resultType"><span class="resultTypeText">Existing Contact image</span><span class="help">(?)</span></div>
+            #{/if}
+            #{else}
+                <div class="resultType"><span class="resultTypeText">No image</span><span class="help">(?)</span></div>
+            #{/else}
+            <div class="resultFixer"><span>Confirm image</span><span class="help">(?)</span><input type="checkbox"></div>
+            </div>
+            <div class="etag">${entry.image_etag}</div>
+            <div class="editLink">${entry.image_edit_link_href}</div>
             <div class="resultText">${entry.name}</div>
             <div class="resultMail">${entry.email}</div>
             <div class="resultActions"></div>
@@ -106,7 +113,7 @@
     </div>
     </form>
     <div class="notDisplayed">
-        <form action="/doSubmitImages" method="POST" id="imagePoster"></form>
+        <form action="http://localhost:8080/doSubmitImages" method="POST" id="imagePoster"></form>
     </div>
 </div>
 
